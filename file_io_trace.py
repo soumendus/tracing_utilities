@@ -84,4 +84,6 @@ while True:
     for key, val in reps.items():
 
         if val.write_bytes > 10000:
-            print("PID: %-8d PROCESS: %-18s NO_WRITES: %-8d Write_kbytes %-6d FILENAME: %s INODE: %-6d" % (key.pid, key.proc.decode('utf-8', 'replace'), val.wrts, val.write_bytes, key.name.decode('utf-8', 'replace'), key.inode))
+            print("PID: %-8d PROCESS: %-18s NO_WRITES: %-8d Write_kbytes %-6d FILENAME: %s INODE: %-6d" % 
+                   (key.pid, key.proc.decode('utf-8', 'replace'), 
+                       val.wrts, val.write_bytes, key.name.decode('utf-8', 'replace'), key.inode))
