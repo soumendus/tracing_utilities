@@ -1,6 +1,9 @@
 #!/usr/bin/python
 
-## This leverages eBPF and traces processes which reads/write to files are greater than 10K KiloBytes 
+## This leverages eBPF and traces processes whose write to files are greater than 10K KiloBytes 
+## Written By Soumendu Sekhar Satapathy
+## Date: 22 August 2023
+## satapathy.soumendu@gmail.com
 
 from bcc import BPF
 
