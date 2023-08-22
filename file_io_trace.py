@@ -37,7 +37,7 @@ struct value_t {
 BPF_HASH(reports, struct key_t, struct value_t);
 
 static int main_trace(struct pt_regs *ctx, struct file *file,
-    char __user *buf, int bytes_w, int read_io)
+    char *buf, int bytes_w, int read_io)
 {
     bpf_trace_printk("\nFile IO tracing per process...\n");
     struct key_t key;
