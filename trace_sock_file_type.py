@@ -8,6 +8,7 @@
 
 from bcc import BPF
 import re
+import sys
 import argparse
 
 parser = argparse.ArgumentParser()
