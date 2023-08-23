@@ -15,6 +15,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-s", "--size", help = "python3 trace_sock_file_types.py -s <bytes_written>")
 args = parser.parse_args()
 if args.size == None:
+    print("python3 trace_sock_file_types.py -s <bytes_written>")
     sys.exit()
 
 prog = r"""
