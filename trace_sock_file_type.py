@@ -12,11 +12,9 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-s", "--size", help = "python3 trace_sock_file_types.py -s <bytes_written>")
-
 args = parser.parse_args()
-
-if args.size:
-    print("Bytes Written = %s" % args.size)
+if args.size == None:
+    sys.exit()
 
 prog = r"""
 #include <uapi/linux/ptrace.h>
@@ -108,7 +106,8 @@ while True:
     for key, val in reps.items():
 
         type_str = re.search("SOCKET", key.type.decode('utf-8', 'replace'))
-        if val.write_bytes > int(args.size) and type_str:
+        con_type = re.search("UDP", key.name.decode('utf-8', 'replace'))
+        if val.write_bytes > int(args.size) and type_str and con_type:
             print("PID: %-8d PROCESS: %-18s NO_WRITES: %-8d Write_kbytes %-6d FILE_TYPE: %s FILENAME: %s INODE: %-6d" % 
                    (key.pid, key.proc.decode('utf-8', 'replace'), val.wrts, val.write_bytes,
                        key.type.decode('utf-8', 'replace'), key.name.decode('utf-8', 'replace'), key.inode))
