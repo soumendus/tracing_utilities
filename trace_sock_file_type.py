@@ -101,7 +101,8 @@ int write_trace(struct pt_regs *ctx, struct file *file,
 b = BPF(text=prog)
 b.attach_kprobe(event="vfs_write", fn_name="write_trace")
 
-# Keep dumping output until terminated externally
+# Read the contents of the "reports" map Data Structure
+# from user space and generate summary or reports.
 while True:
     # Report the data collected
     reps = b.get_table("reports")
