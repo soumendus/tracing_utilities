@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 ## This leverages eBPF and traces processes which writes to socket file types and writes greater than 
 ## <argument> KiloBytes
@@ -12,10 +12,15 @@ import sys
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-s", "--size", help = "python3 trace_sock_file_types.py -s <bytes_written>")
+parser.add_argument("-s", "--size", type=int, help="python3 trace_sock_file_types.py -s <bytes_written> -p <tcp/udp>")
+parser.add_argument("-p", "--proto", help="python3 trace_sock_file_types.py -s <bytes_written> -p <tcp/udp>")
 args = parser.parse_args()
+print(args.size)
 if args.size == None:
-    print("python3 trace_sock_file_types.py -s <bytes_written>")
+    print("python3 trace_sock_file_types.py -s <bytes_written> -p <tcp/udp>")
+    sys.exit()
+if len(sys.argv) < 4:
+    print("python3 trace_sock_file_types.py -s <bytes_written> -p <tcp/udp>")
     sys.exit()
 
 prog = r"""
@@ -101,15 +106,18 @@ int write_trace(struct pt_regs *ctx, struct file *file,
 b = BPF(text=prog)
 b.attach_kprobe(event="vfs_write", fn_name="write_trace")
 
-# Read the contents of the "reports" map Data Structure
-# from user space and generate summary or reports.
+# Keep dumping output until terminated externally
 while True:
     # Report the data collected
     reps = b.get_table("reports")
     for key, val in reps.items():
 
         type_str = re.search("SOCKET", key.type.decode('utf-8', 'replace'))
-        con_type = re.search("UDP", key.name.decode('utf-8', 'replace'))
+
+        if args.proto == "tcp":
+            con_type = re.search("TCP", key.name.decode('utf-8', 'replace'))
+        else:
+            con_type = re.search("UDP", key.name.decode('utf-8', 'replace'))
         if val.write_bytes > int(args.size) and type_str and con_type:
             print("PID: %-8d PROCESS: %-18s NO_WRITES: %-8d Write_kbytes %-6d FILE_TYPE: %s FILENAME: %s INODE: %-6d" % 
                    (key.pid, key.proc.decode('utf-8', 'replace'), val.wrts, val.write_bytes,
