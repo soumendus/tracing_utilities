@@ -23,6 +23,11 @@ if len(sys.argv) < 4:
     print("python3 trace_sock_file_types.py -s <bytes_written> -p <tcp/udp>")
     sys.exit()
 
+print(args.proto)
+if (args.proto  != "tcp") and (args.proto  != "udp"):
+    print("python3 trace_sock_file_types.py -s <bytes_written> -p <tcp/udp>")
+    sys.exit()
+
 prog = r"""
 #include <uapi/linux/ptrace.h>
 #include <linux/blkdev.h>
